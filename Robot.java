@@ -1,4 +1,3 @@
-
 class Robot implements Individual {
 	
 	MapSimulation map;
@@ -24,7 +23,7 @@ class Robot implements Individual {
 		myGenes = g;
 		map = new MapSimulation();
 		brain = new NeuralNet(g);
-		coords = m.getEmptySquare();
+		coords = map.getEmptySquare();
 		score = 0;
 		
 	}
