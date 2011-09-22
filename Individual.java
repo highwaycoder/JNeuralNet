@@ -1,3 +1,4 @@
+package JNeuralNet;
 interface Individual {
-	void tick();
+	void tick() throws Exception;
 }

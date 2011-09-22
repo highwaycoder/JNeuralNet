@@ -1,6 +1,8 @@
+package JNeuralNet;
 import java.util.Random;
 
-class RobotGenome { //implements Genome {
+
+class RobotGenome implements Genome {
 
 	private static final int NUM_INPUTS = 2;
 	private static final int NUM_OUTPUTS = 2;
@@ -27,5 +29,11 @@ class RobotGenome { //implements Genome {
 	}
 	public Robot getIndividual() {
 		return new Robot(this);
+	}
+	public int[] getShape() {
+		return shape;
+	}
+	public double[] getWeights() {
+		return weights;
 	}
 }
