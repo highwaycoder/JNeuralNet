@@ -45,10 +45,11 @@ class Robot implements Individual {
 	}
 	public void tick() throws Exception {
 		updateSensors();
-		short[] outputs = brain.tick(new short[] {strobeSensor,wallSensor});
+		short[] outputs = brain.tick(new short[] {leftSensor,rightSensor,wallSensor});
 		leftMotorSpeed = outputs[0];
 		rightMotorSpeed = outputs[1];
 		moveRobot();
+		map.draw(); // because drawing stuff is fun, and difficult!
 	}
 	
 	void moveRobot() {

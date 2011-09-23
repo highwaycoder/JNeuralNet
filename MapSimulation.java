@@ -70,8 +70,8 @@ class MapSimulation {
 	short getClosestWall(int[] coords, double heading) {
 		int[] c = coords;
 		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
-			c[0] += Math.cos(heading);
-			c[1] += Math.sin(heading);
+			c[0] += (short)Math.floor(Math.cos(direction));
+			c[1] += (short)Math.floor(Math.sin(direction));
 		}
 		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
 		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
@@ -82,13 +82,18 @@ class MapSimulation {
 	short getClosestSeekable(Item[] seeking, int[] coords, double direction) {
 		int[] c = coords;
 		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
-			c[0] += Math.cos(direction);
-			c[1] += Math.sin(direction);	
+			c[0] += (short)Math.floor(Math.cos(direction));
+			c[1] += (short)Math.floor(Math.sin(direction));
 		}
 		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
 		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
 		// Since this is a rather long line, I felt it deserved a rather long explanation.
 		return (short)Math.floor(Math.sqrt((c[0]-coords[0])*(c[0]-coords[0]) + (c[1]-coords[1])*(c[1]-coords[1]))); 
+	}
+
+	public void draw() {
+		// TODO: dunno, do something, draw the map I guess.
+		
 	}
 	
 }

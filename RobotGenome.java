@@ -4,8 +4,9 @@ import java.util.Random;
 
 class RobotGenome implements Genome {
 
-	private static final int NUM_INPUTS = 2;
-	private static final int NUM_OUTPUTS = 2;
+	private static final int NUM_INPUTS = 3;
+	// we said we'd use NUM_OUTPUTS, but I'm not entirely convinced we will.  Uncomment below if I was wrong.
+	// private static final int NUM_OUTPUTS = 2;
 	private static final int NUM_LAYERS = 2;
 	static int[] shape;
 	double[] weights;
