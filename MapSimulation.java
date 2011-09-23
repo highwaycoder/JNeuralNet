@@ -44,13 +44,14 @@ class MapSimulation {
 		int[] rv = new int[3];
 		Random r = new Random();
 		int i = r.nextInt(xSize * ySize);
-		while(items[i] != Item.EMPTY) {
-			i = r.nextInt(xSize * ySize);
+		while(mapItems.get(i).isEmpty()) {
 			// X coordinate is stored in coords[0]
 			rv[0] = i%xSize;
 			// Y coordinate is stored in coords[1]
 			rv[1] = i/xSize; // don't try to be clever and change this to ySize, it will break!
 			rv[2] = i;
+			// try again next time if we don't succeed
+			i = r.nextInt(xSize * ySize);
 		}
 		return rv;
 	} // int[] getEmptySquare()
@@ -61,12 +62,12 @@ class MapSimulation {
 	}
 
 	Item getItemAt(int[] coords) {
-		return items[(coords[0]*xSize) + coords[1]];
+		return mapItems.get((coords[0]*xSize) + coords[1]).getItem();
 	}
 
 	short getClosestWall(int[] coords, double heading) {
 		int[] c = coords;
-		while(!items[c[0]*c[1]].isFlagSet(~Item.EMPTY.flags)) { // while is not not empty...
+		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
 			c[0] += Math.cos(heading);
 			c[1] += Math.sin(heading);
 		}
@@ -75,9 +76,9 @@ class MapSimulation {
 
 	short getClosestSeekable(Item[] seeking, int[] coords, double direction) {
 		int[] c = coords;
-		while(!items[c[0]*c[1]].isFlagSet(~Item.EMPTY.flags)) { // while is not not empty...
-			c[0] += Math.cos(heading);
-			c[1] += Math.sin(heading);	
+		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
+			c[0] += Math.cos(direction);
+			c[1] += Math.sin(direction);	
 		}
 		
 	}

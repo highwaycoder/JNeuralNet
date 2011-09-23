@@ -15,4 +15,8 @@ public class MapItem {
 	boolean isEmpty() {
 		return item.flags == Item.EMPTY.flags;
 	}
+	
+	Item getItem() {
+		return item;
+	}
 }

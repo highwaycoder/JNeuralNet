@@ -16,6 +16,8 @@ class Robot implements Individual {
 		}
 	}
 	
+	static final double LEFT_SENSOR_OFFSET = -1/(2*Math.PI);
+	static final double RIGHT_SENSOR_OFFSET = 1/(2*Math.PI);
 	
 	static Item[] seeking = {
 		Item.LANDMINE
@@ -25,7 +27,7 @@ class Robot implements Individual {
 		Item.ROBOT
 	};
 	
-	short strobeSensor,wallSensor,leftMotorSpeed,rightMotorSpeed;
+	short leftSensor,rightSensor,wallSensor,leftMotorSpeed,rightMotorSpeed;
 	int score;
 	int[] coords;
 	double heading;
@@ -77,13 +79,17 @@ class Robot implements Individual {
 	
 	void updateSensors() {
 		updateWallSensor();
-		updateStrobeSensor();
+		updateLeftSensor();
+		updateRightSensor();
 	}
 	void updateWallSensor() {
 		wallSensor = map.getClosestWall(coords,heading);
 	}
-	void updateStrobeSensor() {
-		strobeSensor = map.getClosestSeekable(seeking,coords);
+	void updateLeftSensor() {
+		leftSensor = map.getClosestSeekable(seeking,coords,heading+LEFT_SENSOR_OFFSET);
+	}
+	void updateRightSensor() {
+		rightSensor = map.getClosestSeekable(seeking,coords,heading+RIGHT_SENSOR_OFFSET);
 	}
 	RobotGenome mate(RobotGenome partner) {
 		
