@@ -56,9 +56,11 @@ class MapSimulation {
 		return rv;
 	} // int[] getEmptySquare()
 	
-	boolean isSquareEmpty(int[] coord) {
-		
-	}
+	boolean isSquareEmpty(int[] coord) throws Exception {
+		for(int i=0;i<mapItems.size();i++)
+			if(mapItems.get(i).getCoords()==coord)
+				return mapItems.get(i).isEmpty();
+		throw new Exception("Array index out of bounds");
 	}
 
 	Item getItemAt(int[] coords) {
@@ -71,6 +73,9 @@ class MapSimulation {
 			c[0] += Math.cos(heading);
 			c[1] += Math.sin(heading);
 		}
+		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
+		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
+		// Since this is a rather long line, I felt it deserved a rather long explanation.
 		return (short)Math.floor(Math.sqrt((c[0]-coords[0])*(c[0]-coords[0]) + (c[1]-coords[1])*(c[1]-coords[1])));
 	}
 
@@ -80,7 +85,10 @@ class MapSimulation {
 			c[0] += Math.cos(direction);
 			c[1] += Math.sin(direction);	
 		}
-		
+		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
+		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
+		// Since this is a rather long line, I felt it deserved a rather long explanation.
+		return (short)Math.floor(Math.sqrt((c[0]-coords[0])*(c[0]-coords[0]) + (c[1]-coords[1])*(c[1]-coords[1]))); 
 	}
 	
 }

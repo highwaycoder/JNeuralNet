@@ -15,7 +15,9 @@ public class MapItem {
 	boolean isEmpty() {
 		return item.flags == Item.EMPTY.flags;
 	}
-	
+	int[] getCoords(){
+		return coord;
+	}
 	Item getItem() {
 		return item;
 	}
