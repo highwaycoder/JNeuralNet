@@ -21,6 +21,7 @@ public class RobotMain {
 		case 0:
 			System.err.println("USAGE: not done yet.");
 		default:
+			break;
 		}
 
 		if(args.length > 4) {

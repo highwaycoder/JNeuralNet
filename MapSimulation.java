@@ -46,8 +46,9 @@ class MapSimulation {
 	int[] getEmptySquare() {
 		int[] rv = new int[3];
 		Random r = new Random();
-		int i = r.nextInt(xSize * ySize);
+		int i = r.nextInt(mapItems.size());
 		while(mapItems.get(i).isEmpty()) {
+			System.out.println("looping...");
 			// X coordinate is stored in coords[0]
 			rv[0] = i%xSize;
 			// Y coordinate is stored in coords[1]
@@ -101,7 +102,7 @@ class MapSimulation {
 
 	public void draw() {
 		// TODO: dunno, do something, draw the map I guess.
-		
+		System.out.println("Tick complete (draw() called)");
 	}
 	
 }

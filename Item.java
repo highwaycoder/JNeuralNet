@@ -40,9 +40,12 @@ public enum Item {
 		if(flags==0) return Item.EMPTY;
 		Random r = new Random();
 		int randomFlag = (int)Math.pow(2,r.nextInt((int)Math.floor(Math.log(flags)/Math.log(2))));
+		System.out.println("Entering while() loop");
 		while(!isFlagSet(randomFlag)) {
+			System.out.println("looping...");
 			randomFlag = (int)Math.pow(2,r.nextInt((int)Math.floor(Math.log(flags)/Math.log(2))));
 		}
+		System.out.println("Done");
 		if(Math.floor(Math.log(randomFlag)/Math.log(2)) != Math.log(randomFlag)/Math.log(2))
 		{
 			System.err.println("ARGH! randItem() is broken!");

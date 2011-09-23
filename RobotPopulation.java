@@ -26,6 +26,7 @@ public class RobotPopulation implements Population {
 		for(int i=0; i<generations; i++) {
 			for(int j=0; j<cyclesPerGeneration; j++) {
 				for(int k=0; k<individuals.length; k++) {
+					System.out.println("Calling individuals[i].tick()");
 					individuals[k].tick();
 				}
 			}
