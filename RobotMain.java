@@ -27,7 +27,11 @@ public class RobotMain {
 			System.err.println("Expected at most 4 arguments, ignored the rest.");
 		}
 		RobotPopulation pop = new RobotPopulation(size, ppg);
-		//pop.run();
+		try {
+			pop.run(ticksPerGeneration,numGenerations);
+		} catch (Exception e) {
+			System.err.println("Exception thrown by pop.run(): "+e.toString());
+		}
 	}
 }
 
