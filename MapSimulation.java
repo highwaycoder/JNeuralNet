@@ -14,7 +14,7 @@ class MapSimulation {
 	int xSize;
 	int ySize;
 	
-	MapSimulation(int x, int y, int numOfSeekables, Item[] seekables) {
+	MapSimulation(int x, int y, int numOfSeekables, Item seekables) {
 		xSize = x;
 		ySize = y;
 		mapItems = new ArrayList<MapItem>();
@@ -26,18 +26,21 @@ class MapSimulation {
 			}
 		}
 		for(int i=0;i<numOfSeekables;i++) {
-			int[] coordinate = getEmptySquare();
-			mapItems.add(new MapItem(coordinate, seekables[new Random().nextInt(seekables.length)]));
-			//items[coordinate[2]].setFlag(seekables[new Random().nextInt(seekables.length)]);
+			spawnSeekable(seekables);
 		}
 	}
 	
-	MapSimulation(int numOfSeekables, Item[] seekables) {
+	MapSimulation(int numOfSeekables, Item seekables) {
 		this(DEFAULT_XSIZE,DEFAULT_YSIZE,numOfSeekables,seekables);
 	}
 	
-	MapSimulation(Item[] seekables) {
+	MapSimulation(Item seekables) {
 		this(DEFAULT_NUMOFSEEKABLES,seekables);
+	}
+	
+	void spawnSeekable(Item seekables) {
+		int[] coordinate = getEmptySquare();
+		mapItems.add(new MapItem(coordinate, seekables.randItem()));
 	}
 	
 	int[] getEmptySquare() {
@@ -66,12 +69,17 @@ class MapSimulation {
 	Item getItemAt(int[] coords) {
 		return mapItems.get((coords[0]*xSize) + coords[1]).getItem();
 	}
+	
+	void setItemAt(int[] coords,Item t) {
+		MapItem to = new MapItem(coords,t);
+		mapItems.set((coords[0]*xSize) + coords[1],to); 
+	}
 
 	short getClosestWall(int[] coords, double heading) {
 		int[] c = coords;
 		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
-			c[0] += (int)Math.floor(Math.cos(direction));
-			c[1] += (int)Math.floor(Math.sin(direction));
+			c[0] += (int)Math.floor(Math.cos(heading));
+			c[1] += (int)Math.floor(Math.sin(heading));
 		}
 		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
 		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
@@ -79,9 +87,9 @@ class MapSimulation {
 		return (short)Math.floor(Math.sqrt((c[0]-coords[0])*(c[0]-coords[0]) + (c[1]-coords[1])*(c[1]-coords[1])));
 	}
 
-	short getClosestSeekable(Item[] seeking, int[] coords, double direction) {
+	short getClosestSeekable(Item seeking, int[] coords, double direction) {
 		int[] c = coords;
-		while(mapItems.get(c[0]*c[1]).isEmpty()) { // while is empty (remove double negative, woot!)
+		while(((mapItems.get(c[0]*c[1]).getItem().getFlags()) & seeking.getFlags())==0) {
 			c[0] += (int)Math.floor(Math.cos(direction));
 			c[1] += (int)Math.floor(Math.sin(direction));
 		}
