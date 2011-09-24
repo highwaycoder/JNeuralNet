@@ -62,7 +62,7 @@ class MapSimulation {
 			rv[1] = i/xSize; // don't try to be clever and change this to ySize, it will break!
 			rv[2] = i;
 			// try again next time if we don't succeed
-			i = r.nextInt(xSize * ySize);
+			i = r.nextInt(mapItems.size());
 		}
 		return rv;
 	} // int[] getEmptySquare()
