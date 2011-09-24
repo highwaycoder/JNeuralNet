@@ -36,7 +36,7 @@ public enum Item {
 	int getFlags(){
 		return flags;
 	}
-	Item randItem() {
+	Item randItem() throws Exception {
 		if(flags==0) return Item.EMPTY;
 		Random r = new Random();
 		int randomFlag = 1<<r.nextInt(32); // see comment below
@@ -44,7 +44,10 @@ public enum Item {
 		// this little magic doodah should give us a sensible upper-bound for shifting randomFlag later on
 		int topend = flags;
 		int i=0;
-		for(i=0; topend==0; i++) topend >>= 1;
+		for(i=0; topend>0; i++) topend >>= 1;
+		if(i<=0) {
+			throw new Exception("Fixme: randItem() has been called on Item.EMPTY (probably)");
+		}
 		// doodah ends
 		while(!isFlagSet(randomFlag)) {
 			System.out.println("looping...");

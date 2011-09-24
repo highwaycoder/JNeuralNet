@@ -40,7 +40,14 @@ class MapSimulation {
 	
 	void spawnSeekable(Item seekables) {
 		int[] coordinate = getEmptySquare();
+		try {
 		mapItems.add(new MapItem(coordinate, seekables.randItem()));
+		} catch (Exception e) {
+			// since we're pretty damn sure seekables is not empty...
+			System.err.println(e.toString());
+			// then again, maybe it is.  But we don't much care if it is (do we?) uncomment below if we do
+			// System.exit(-1);
+		}
 	}
 	
 	int[] getEmptySquare() {
