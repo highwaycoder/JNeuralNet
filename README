@@ -4,6 +4,8 @@ Authors: Chris Browne <chris@pemcjd.me.uk>
 
 Current Status: no Makefile present
 
+The below Psuedocode is now completely at odds with the current implementation.  Despite its embarrassingly naive approach, I've decided to leave it in as a historical reminder of how far we've come.
+
 --- PSUEDOCODE ---
 
 We originally worked from this Psuedocode:
