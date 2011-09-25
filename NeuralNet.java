@@ -17,7 +17,7 @@ public class NeuralNet {
 			short tick(short[] inputs) throws Exception {
 				short output=0;
 				if(weights.length != inputs.length) {
-					throw new Exception("Error: Too many or too few inputs to Neuron");
+					throw new Exception("Error: Too many or too few inputs to Neuron (Inputs:"+inputs.length+" Weights:"+weights.length+")");
 				}
 				for(int i=0; i<inputs.length; i++) {
 					output += inputs[i]*weights[i];
@@ -32,6 +32,8 @@ public class NeuralNet {
 		
 		NeuronLayer(double[] w,int numOfNeurons) {
 			neurons = new Neuron[numOfNeurons];
+			System.err.println("weights per layer:"+w.length);
+			System.err.println("neurons per layer:"+numOfNeurons);
 			for(int i=0;i<numOfNeurons;i++) {
 				neurons[i] = new Neuron(Arrays.copyOfRange(w,(w.length/numOfNeurons)*i,(w.length/numOfNeurons)*(i+1)));
 			}
@@ -58,6 +60,7 @@ public class NeuralNet {
 	
 	short[] tick(short[] inputs) throws Exception {
 		short[] output = inputs;
+		
 		for(int i=0;i<layers.length;i++) {
 			output = layers[i].tick(output);
 		}

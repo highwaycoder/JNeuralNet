@@ -20,7 +20,7 @@ class RobotGenome implements Genome {
 	private static final int NUM_OUTPUTS = shape[shape.length-1];
 
 	RobotGenome() {
-		weights = new double[NUM_INPUTS * shape[0] + shape[0] * shape[1] /* ... */];
+		weights = new double[NUM_INPUTS * shape[0] + shape[0] * shape[1] /* ... */]; 
 		Random myRand = new Random();
 		for(int i=0;i<weights.length;i++) {
 			weights[i] = myRand.nextDouble()*2-1;

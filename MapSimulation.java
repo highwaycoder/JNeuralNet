@@ -43,10 +43,9 @@ class MapSimulation {
 		try {
 		mapItems.add(new MapItem(coordinate, seekables.randItem()));
 		} catch (Exception e) {
-			// since we're pretty damn sure seekables is not empty...
-			System.err.println(e.toString());
-			// then again, maybe it is.  But we don't much care if it is (do we?) uncomment below if we do
-			// System.exit(-1);
+			// output a warning
+			System.err.println("Warning: spawnSeekable() has been called when the robot is not seeking anything.");
+			// if we output this we know that we are at best inefficient, at worst broken.
 		}
 	}
 	
@@ -55,7 +54,6 @@ class MapSimulation {
 		Random r = new Random();
 		int i = r.nextInt(mapItems.size());
 		while(mapItems.get(i).isEmpty()) {
-			System.out.println("looping...");
 			// X coordinate is stored in coords[0]
 			rv[0] = i%xSize;
 			// Y coordinate is stored in coords[1]
@@ -97,9 +95,15 @@ class MapSimulation {
 
 	short getClosestSeekable(Item seeking, int[] coords, double direction) {
 		int[] c = coords;
+		int distanceChecked = 0;
 		while(((mapItems.get(c[0]*c[1]).getItem().getFlags()) & seeking.getFlags())==0) {
 			c[0] += (int)Math.floor(Math.cos(direction));
 			c[1] += (int)Math.floor(Math.sin(direction));
+			// reason for infinite loop: there might not actually be a seekable directly ahead
+			// sanity check: stop after mapItem.size() tries
+			// NOTE: this sanity check does not take into account the fact that the robot can only see from himself to the map's edge
+			// it assumes the robot will be looking from one side of the map to the other, it's inefficient and should be fixed (later)
+			if(++distanceChecked == mapItems.size()) break ; else continue; // tried implementing as ternary, Java hates me.
 		}
 		// return the integer from the function sqrt(a²+b²) where a and b are the lengths of the vectors between coords and coords+c[0], and
 		// between coords and coords+c[1].  The result is the hypotenuse, according to Pythagorus' theorum.
