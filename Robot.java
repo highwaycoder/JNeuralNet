@@ -95,8 +95,15 @@ class Robot implements Individual {
 	
 	void updateSensors() {
 		updateWallSensor();
-		updateLeftSensor();
-		updateRightSensor();
+		// since we've had historical problems with IndexOutOfBoundsExceptions, please leave this try/catch block in place.
+		try {
+			updateLeftSensor();
+			updateRightSensor();
+		} catch (IndexOutOfBoundsException e) {
+			System.err.println("Error caused by updateSensors: ");
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 	void updateWallSensor() {
 		wallSensor = map.getClosestWall(coords,heading);

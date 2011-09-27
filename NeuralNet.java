@@ -30,12 +30,10 @@ public class NeuralNet {
 		
 		} // class Neuron
 		
-		NeuronLayer(double[] w,int numOfNeurons) {
+		NeuronLayer(double[] w,int numOfNeurons, int numOfWeightsPerNeuron) {
 			neurons = new Neuron[numOfNeurons];
-			System.err.println("weights per layer:"+w.length);
-			System.err.println("neurons per layer:"+numOfNeurons);
 			for(int i=0;i<numOfNeurons;i++) {
-				neurons[i] = new Neuron(Arrays.copyOfRange(w,(w.length/numOfNeurons)*i,(w.length/numOfNeurons)*(i+1)));
+				neurons[i] = new Neuron(Arrays.copyOfRange(w,numOfWeightsPerNeuron*i,(numOfWeightsPerNeuron*i)+numOfWeightsPerNeuron));
 			}
 		}
 		
@@ -52,9 +50,15 @@ public class NeuralNet {
 	NeuralNet(Genome g) {
 		shape = g.getShape();
 		layers = new NeuronLayer[shape.length];
-		for(int i=0;i<shape.length;i++) {
-			double[] layerWeights = g.getWeights();
-			layers[i] = new NeuronLayer(Arrays.copyOfRange(layerWeights,(layerWeights.length/shape.length)*i,(layerWeights.length/shape.length)*(i+1)),shape[i]);
+		int i=0;
+		double[] layerWeights = g.getWeights();
+		// 0 and 1 are special cases, because the number of neurons in each layer is dependent on the size of the TWO preceding layers (counting 'inputs' as a layer if necessary)
+		layers[0] = new NeuronLayer(Arrays.copyOfRange(layerWeights, 0, shape[0]*RobotGenome.NUM_INPUTS),shape[0],RobotGenome.NUM_INPUTS);
+		layers[1] = new NeuronLayer(Arrays.copyOfRange(layerWeights, shape[0]*RobotGenome.NUM_INPUTS, (shape[0]*RobotGenome.NUM_INPUTS) + (shape[0]*shape[1])),shape[1],shape[0]);
+		if(shape.length>2) { // sanity check
+			for(i=2;i<shape.length;i++) {
+				layers[i] = new NeuronLayer(Arrays.copyOfRange(layerWeights, shape[i-2]*shape[i-1], shape[i-2]*shape[i-1] + shape[i]*shape[i-1]),shape[i],shape[i-1]);
+			}
 		}
 	}
 	

@@ -4,9 +4,9 @@ import java.util.Random;
 
 class RobotGenome implements Genome {
 
-	private static final int NUM_INPUTS = 3;
-	private static final int NUM_LAYERS = 2;
-	private static final double MUTATION_RATE = 0.05;
+	public static final int NUM_INPUTS = 3;
+	public static final int NUM_LAYERS = 2;
+	public static final double MUTATION_RATE = 0.05;
 	static int[] shape;
 	double[] weights;
 	static {
@@ -20,7 +20,7 @@ class RobotGenome implements Genome {
 	private static final int NUM_OUTPUTS = shape[shape.length-1];
 
 	RobotGenome() {
-		weights = new double[NUM_INPUTS * shape[0] + shape[0] * shape[1] /* ... */]; 
+		weights = new double[(NUM_INPUTS * shape[0]) + (shape[0] * shape[1]) /* ... */]; 
 		Random myRand = new Random();
 		for(int i=0;i<weights.length;i++) {
 			weights[i] = myRand.nextDouble()*2-1;
