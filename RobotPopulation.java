@@ -24,9 +24,10 @@ public class RobotPopulation implements Population {
 	
 	public void run(int cyclesPerGeneration, int generations) throws Exception {
 		for(int i=0; i<generations; i++) {
+			System.out.print("Generation "+i+" started: ");
 			for(int j=0; j<cyclesPerGeneration; j++) {
 				for(int k=0; k<individuals.length; k++) {
-					System.out.println("Calling individuals["+k+"].tick()");
+					// System.out.print(".");
 					individuals[k].tick();
 				}
 			}
@@ -58,6 +59,7 @@ public class RobotPopulation implements Population {
 			}
 			rv.add(index, individuals[i]);
 		}
-		return (Robot[])rv.toArray();
+		System.out.print("Fittest child's score: "+rv.get(0).getScore()+"\n");
+		return rv.toArray(new Robot[rv.size()]);
 	}
 }

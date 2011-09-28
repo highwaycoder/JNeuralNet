@@ -100,6 +100,7 @@ class MapSimulation {
 		for(int i=0;i<mapItems.size();i++) {
 			if((mapItems.get(i).item.getFlags() & seeking.getFlags()) != 0) { // if we have a seekable
 				rv = (short)Math.floor(Math.hypot(coords[0]-mapItems.get(i).getCoords()[0],coords[1]-mapItems.get(i).getCoords()[1]));
+				break; // break out of the for() loop
 			}
 		}
 		return rv;
@@ -134,7 +135,6 @@ class MapSimulation {
 	*/
 	public void draw() {
 		// TODO: dunno, do something, draw the map I guess.
-		System.out.println("Tick complete (draw() called)");
 	}
 	
 }
