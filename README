@@ -1,8 +1,8 @@
-Release version: N/A (no runnable version available)
+Release version: 0.1
 Authors: Chris Browne <chris@pemcjd.me.uk>
-		 James Ward <>
+	 James Ward <>
 
-Current Status: no Makefile present
+Current Status: Runs, robots don't appear to evolve.  Output is simply generation number followed by highest score.
 
 The below Psuedocode is now completely at odds with the current implementation.  Despite its embarrassingly naive approach, I've decided to leave it in as a historical reminder of how far we've come.
 
