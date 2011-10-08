@@ -14,14 +14,14 @@ class MapSimulation {
 	int xSize;
 	int ySize;
 	
-	MapSimulation(int x, int y, int numOfSeekables, Item seekables) {
+	MapSimulation(int x, int y, int numOfSeekables, ItemType seekables) {
 		xSize = x;
 		ySize = y;
 		mapItems = new ArrayList<MapItem>();
 		for(int i=0;i<x*y;i++) {
 			// if at edge of map, wall!
 			if(i%xSize==0 || i/xSize==0 || i%xSize==xSize-1 || i/xSize==ySize-1) {
-				mapItems.add(new MapItem(new int[] { i%xSize, i/xSize }, Item.WALL));
+				mapItems.add(new MapItem(new int[] { i%xSize, i/xSize }, ItemType.WALL));
 				//items[i].setFlag(Item.WALL);
 			}
 		}
@@ -30,18 +30,21 @@ class MapSimulation {
 		}
 	}
 	
-	MapSimulation(int numOfSeekables, Item seekables) {
+	MapSimulation(int numOfSeekables, ItemType seekables) {
 		this(DEFAULT_XSIZE,DEFAULT_YSIZE,numOfSeekables,seekables);
 	}
 	
-	MapSimulation(Item seekables) {
+	MapSimulation(ItemType seekables) {
 		this(DEFAULT_NUMOFSEEKABLES,seekables);
 	}
 	
-	void spawnSeekable(Item seekables) {
+	@SuppressWarnings("unchecked")
+	void spawnSeekable(ItemType seekables) {
 		int[] coordinate = getEmptySquare();
+		Random r = new Random();
 		try {
-		mapItems.add(new MapItem(coordinate, seekables.randItem()));
+			// TODO SO MUCH KLUDGE!!! PLEASE FIXME ASAP!!
+		mapItems.add(new MapItem(coordinate,(ItemType)new ArrayList<Enum>(seekables.type).get(r.nextInt(seekables.type.size())))); // five closing parens in a row? must be a record...
 		} catch (Exception e) {
 			// output a warning
 			System.err.println("Warning: spawnSeekable() has been called when the robot is not seeking anything.");
@@ -72,11 +75,11 @@ class MapSimulation {
 		throw new Exception("Array index out of bounds");
 	}
 
-	Item getItemAt(int[] coords) {
-		return mapItems.get((coords[0]*xSize) + coords[1]).getItem();
+	MapItem getItemAt(int[] coords) {
+		return mapItems.get((coords[0]*xSize) + coords[1]);
 	}
 	
-	void setItemAt(int[] coords,Item t) {
+	void setItemAt(int[] coords,ItemType t) {
 		MapItem to = new MapItem(coords,t);
 		mapItems.set((coords[0]*xSize) + coords[1],to); 
 	}
@@ -93,12 +96,12 @@ class MapSimulation {
 		return (short)Math.floor(Math.hypot((c[0]-coords[0]),(c[1]-coords[1])));  // line shortened using Math.hypot()
 	}
 
-	short getClosestSeekable(Item seeking, int[] coords, double direction) {
+	short getClosestSeekable(ItemType seeking, int[] coords, double direction) {
 		// TODO: make sure we're only getting the closest seekable, not just the first one we hit, also check seekable is in the right 'direction'
 		// initialise rv as being the largest possible value, so we don't end up returning 0 if we don't find any seekables
 		short rv = (short)mapItems.size();
 		for(int i=0;i<mapItems.size();i++) {
-			if((mapItems.get(i).item.getFlags() & seeking.getFlags()) != 0) { // if we have a seekable
+			if(mapItems.get(i).item.type.containsAll(seeking.type)) { // if we have a landmine
 				rv = (short)Math.floor(Math.hypot(coords[0]-mapItems.get(i).getCoords()[0],coords[1]-mapItems.get(i).getCoords()[1]));
 				break; // break out of the for() loop
 			}
@@ -134,7 +137,12 @@ class MapSimulation {
 	}
 	*/
 	public void draw() {
-		// TODO: dunno, do something, draw the map I guess.
+		for(int i=0; i<mapItems.size(); i++) {
+			drawItem(mapItems.get(i).item,mapItems.get(i).coord[0],mapItems.get(i).coord[1]);
+		}
 	}
-	
+	public void drawItem(ItemType item, int CentreX, int CentreY) {
+		
+		
+	}
 }

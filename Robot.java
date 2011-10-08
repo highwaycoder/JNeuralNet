@@ -23,11 +23,9 @@ class Robot implements Individual {
 	
 	static final int NUM_OFFSPRING = 2;
 	
-	static Item seeking = Item.EMPTY.setFlag(Item.LANDMINE.getFlags());
-	static Item[] avoiding = {
-		Item.WALL,
-		Item.ROBOT
-	};
+	static ItemType seeking;
+	static ItemType avoiding;
+	static ItemType bouncy;
 	
 	short leftSensor,rightSensor,wallSensor,leftMotorSpeed,rightMotorSpeed;
 	int score;
@@ -44,6 +42,13 @@ class Robot implements Individual {
 		score = 0;
 		leftMotorSpeed=0;
 		rightMotorSpeed=0;
+		
+		// set up the seeking/avoiding things here (oh GOD so much KLUDGE! >_<)
+		seeking.type.add(ItemType.LANDMINE);
+		avoiding.type.add(ItemType.ROBOT);
+		avoiding.type.add(ItemType.WALL);
+		// also set up the crashable things
+		bouncy.type.add(ItemType.WALL);
 	}
 	public void tick() throws Exception {
 		updateSensors();
@@ -71,25 +76,26 @@ class Robot implements Individual {
 		coords[1] += Math.sin(heading);
 		if(!(coords[0]==oldcoords[0] && coords[1]==oldcoords[1])){
 			score += ScoreModifier.MOVE_PENALTY.amount;
-			Item here = map.getItemAt(coords);
-			Item oldhere = map.getItemAt(oldcoords);
-			if(here.isFlagSet(seeking)) {
+			MapItem here = map.getItemAt(coords);
+			MapItem oldhere = map.getItemAt(oldcoords);
+			// this may seem like it's the wrong way around, but we're checking if "here" holds a subset of "seeking"
+			if(seeking.type.containsAll(here.getItem().type)) {
 					score += ScoreModifier.SOUGHT_REWARD.amount;
-					here.removeFlag(seeking);
+					here.acquired(seeking);
 					map.spawnSeekable(seeking);
 			}
-			for(int i=0;i<avoiding.length;i++) {
-				if(here.isFlagSet(avoiding[i])) {
-					score += ScoreModifier.CRASHED_PENALTY.amount;
-				}
+			// again, we're checking if "here" is a subset of "avoiding" (ie contains any or all of the elements in "avoiding")
+			if(avoiding.type.containsAll(here.getItem().type)) {
+				score += ScoreModifier.CRASHED_PENALTY.amount;
 			}
-			if(here.isFlagSet(Item.WALL)){
+			if(here.getItem().type.contains(bouncy)){
+				// crash = jump backwards
 				coords = oldcoords;
 			}
-			oldhere.removeFlag(Item.ROBOT);
-			here.setFlag(Item.ROBOT);
-			map.setItemAt(oldcoords,oldhere);
-			map.setItemAt(coords,here);
+			oldhere.getItem().type.remove(ItemType.ROBOT);
+			here.getItem().type.add(ItemType.ROBOT);
+			map.setItemAt(oldcoords,oldhere.getItem());
+			map.setItemAt(coords,here.getItem());
 		}
 	}
 	
