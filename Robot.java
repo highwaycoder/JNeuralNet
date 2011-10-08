@@ -1,6 +1,7 @@
 package JNeuralNet;
 
 import java.util.Random;
+import java.util.EnumSet;
 
 class Robot implements Individual {
 	
@@ -23,9 +24,9 @@ class Robot implements Individual {
 	
 	static final int NUM_OFFSPRING = 2;
 	
-	static ItemType seeking;
-	static ItemType avoiding;
-	static ItemType bouncy;
+	static EnumSet<ItemType> seeking = EnumSet.of(ItemType.LANDMINE);
+	static EnumSet<ItemType> avoiding = EnumSet.of(ItemType.ROBOT,ItemType.WALL);
+	static EnumSet<ItemType> bouncy = EnumSet.of(ItemType.WALL);
 	
 	short leftSensor,rightSensor,wallSensor,leftMotorSpeed,rightMotorSpeed;
 	int score;
@@ -34,21 +35,15 @@ class Robot implements Individual {
 	
 	RobotGenome myGenes;
 	
-	Robot(RobotGenome g) {
+	Robot(RobotGenome g, MapSimulation m) {
+		
 		myGenes = g;
-		map = new MapSimulation(seeking);
+		map = m;
 		brain = new NeuralNet(g);
 		coords = map.getEmptySquare();
 		score = 0;
 		leftMotorSpeed=0;
 		rightMotorSpeed=0;
-		
-		// set up the seeking/avoiding things here (oh GOD so much KLUDGE! >_<)
-		seeking.type.add(ItemType.LANDMINE);
-		avoiding.type.add(ItemType.ROBOT);
-		avoiding.type.add(ItemType.WALL);
-		// also set up the crashable things
-		bouncy.type.add(ItemType.WALL);
 	}
 	public void tick() throws Exception {
 		updateSensors();
@@ -56,7 +51,6 @@ class Robot implements Individual {
 		leftMotorSpeed = outputs[0];
 		rightMotorSpeed = outputs[1];
 		moveRobot();
-		map.draw(); // because drawing stuff is fun, and difficult!
 	}
 	
 	public int getScore() {
@@ -79,21 +73,21 @@ class Robot implements Individual {
 			MapItem here = map.getItemAt(coords);
 			MapItem oldhere = map.getItemAt(oldcoords);
 			// this may seem like it's the wrong way around, but we're checking if "here" holds a subset of "seeking"
-			if(seeking.type.containsAll(here.getItem().type)) {
+			if(seeking.containsAll(here.getItem())) {
 					score += ScoreModifier.SOUGHT_REWARD.amount;
 					here.acquired(seeking);
 					map.spawnSeekable(seeking);
 			}
 			// again, we're checking if "here" is a subset of "avoiding" (ie contains any or all of the elements in "avoiding")
-			if(avoiding.type.containsAll(here.getItem().type)) {
+			if(avoiding.containsAll(here.getItem())) {
 				score += ScoreModifier.CRASHED_PENALTY.amount;
 			}
-			if(here.getItem().type.contains(bouncy)){
+			if(here.getItem().contains(bouncy)){
 				// crash = jump backwards
 				coords = oldcoords;
 			}
-			oldhere.getItem().type.remove(ItemType.ROBOT);
-			here.getItem().type.add(ItemType.ROBOT);
+			oldhere.getItem().remove(ItemType.ROBOT);
+			here.getItem().add(ItemType.ROBOT);
 			map.setItemAt(oldcoords,oldhere.getItem());
 			map.setItemAt(coords,here.getItem());
 		}

@@ -29,9 +29,6 @@ class RobotGenome implements Genome {
 	RobotGenome(double[] w) {
 		weights = w;
 	}
-	public Robot getIndividual() {
-		return new Robot(this);
-	}
 	public int[] getShape() {
 		return shape;
 	}

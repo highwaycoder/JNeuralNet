@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class RobotPopulation implements Population {
 	Robot[] individuals;
+	MapSimulation[] worlds;
 	int ppg;
 	
-	RobotPopulation(int size, int parentsPerGeneration) {
+	RobotPopulation(int size, int parentsPerGeneration,RobotDisplay robotDisplay) {
 		if(parentsPerGeneration > size) {
 			System.err.println("More parents than population!! Cannot proceed.");
 			System.exit(-1);
@@ -16,10 +17,13 @@ public class RobotPopulation implements Population {
 			System.exit(-1);
 		}
 		individuals = new Robot[size];
+		worlds = new MapSimulation[size];
 		ppg = parentsPerGeneration;
 		for(int i=0; i<size; i++) {
-			individuals[i] = new Robot(new RobotGenome());
+			worlds[i] = new MapSimulation(Robot.seeking);
+			individuals[i] = new Robot(new RobotGenome(),worlds[i]);
 		}
+		robotDisplay.setWorlds(worlds);
 	}
 	
 	public void run(int cyclesPerGeneration, int generations) throws Exception {

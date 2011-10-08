@@ -1,26 +1,28 @@
 package JNeuralNet;
 
+import java.util.EnumSet;
+
 public class MapItem {
 	int[] coord;
-	ItemType item;
+	EnumSet<ItemType> item;
 	
-	MapItem(int[] coord, ItemType i) {
+	MapItem(int[] coord, EnumSet<ItemType> i) {
 		this.coord = coord;
 		// this is better than operator= (TODO: verify that I'm right in thinking this)
-		item.type.addAll(i.type);
+		item = i;
 	}
 	
-	void acquired(ItemType t) {
+	void acquired(EnumSet<ItemType> t) {
 		// remove it from our instance if it has been acquired
-		item.type.remove(t);
+		item.remove(t);
 	}
 	boolean isEmpty() {
-		return item.type.isEmpty();
+		return item.isEmpty();
 	}
 	int[] getCoords(){
 		return coord;
 	}
-	ItemType getItem() {
+	EnumSet<ItemType> getItem() {
 		return item;
 	}
 }
