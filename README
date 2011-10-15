@@ -2,7 +2,7 @@ Release version: 0.1
 Authors: Chris Browne <chris@pemcjd.me.uk>
 	 James Ward <>
 
-Current Status: Runs, robots don't appear to evolve.  Output is simply generation number followed by highest score.
+Current Status: Working on a connect four AI now, robot stuff can wait.  Connect four uncompilable, but we're close.
 
 The below Psuedocode is now completely at odds with the current implementation.  Despite its embarrassingly naive approach, I've decided to leave it in as a historical reminder of how far we've come.
 
