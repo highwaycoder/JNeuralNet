@@ -2,8 +2,6 @@ package JNeuralNet;
 
 import java.util.Arrays;
 
-import neuralrobots.RobotGenome;
-
 public class NeuralNet {
 	
 	int[] shape;
@@ -22,7 +20,8 @@ public class NeuralNet {
 					throw new Exception("Error: Too many or too few inputs to Neuron (Inputs:"+inputs.length+" Weights:"+weights.length+")");
 				}
 				for(int i=0; i<inputs.length; i++) {
-					output += inputs[i]*weights[i];
+					output += inputs[i] * weights[i];
+					// System.out.println("neuron fires a pulse of "+output);
 				}
 				return output;
 			} // short tick(short[] inputs)
@@ -55,8 +54,8 @@ public class NeuralNet {
 		int i=0;
 		double[] layerWeights = g.getWeights();
 		// 0 and 1 are special cases, because the number of neurons in each layer is dependent on the size of the TWO preceding layers (counting 'inputs' as a layer if necessary)
-		layers[0] = new NeuronLayer(Arrays.copyOfRange(layerWeights, 0, shape[0]*RobotGenome.NUM_INPUTS),shape[0],RobotGenome.NUM_INPUTS);
-		layers[1] = new NeuronLayer(Arrays.copyOfRange(layerWeights, shape[0]*RobotGenome.NUM_INPUTS, (shape[0]*RobotGenome.NUM_INPUTS) + (shape[0]*shape[1])),shape[1],shape[0]);
+		layers[0] = new NeuronLayer(Arrays.copyOfRange(layerWeights, 0, shape[0]*g.getNumInputs()),shape[0],g.getNumInputs());
+		layers[1] = new NeuronLayer(Arrays.copyOfRange(layerWeights, shape[0]*g.getNumInputs(), (shape[0]*g.getNumInputs()) + (shape[0]*shape[1])),shape[1],shape[0]);
 		if(shape.length>2) { // sanity check
 			for(i=2;i<shape.length;i++) {
 				layers[i] = new NeuronLayer(Arrays.copyOfRange(layerWeights, shape[i-2]*shape[i-1], shape[i-2]*shape[i-1] + shape[i]*shape[i-1]),shape[i],shape[i-1]);

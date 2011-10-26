@@ -1,91 +1,73 @@
 package connectfour;
 
 public class Game {
-	static final int BOARD_WIDTH = 7;
-	static final int BOARD_HEIGHT = 6;
-	enum boardLocationState {
-		EMPTY, PLAYER_A, PLAYER_B
-	}
+	
 	boolean gameWon;
 	byte lastColumn;
 	int turnsTaken;
+	int playerTurn;
 	Player[] players;
-	boardLocationState[][] board;
+	Board board;
+	
 	Game(Player a, Player b) {
 		players = new Player[] { a, b };
-		board = new boardLocationState[BOARD_WIDTH][BOARD_HEIGHT];
-		for(int i=0; i<BOARD_WIDTH; i++) {
-			for(int j=0;j<BOARD_HEIGHT;j++) {
-				board[i][j] = boardLocationState.EMPTY;
-			}
-		}
+		board = new Board();
 		gameWon = false;
-		turnsTaken = 0;
+		// initialise turnsTaken to be negative so that a zero-length game can be caught
+		turnsTaken = -1;
 	}
 	
 	private void takeTurn(int player, byte playerDecision) {
-		lastColumn = playerDecision;
-		if(playerDecision >= BOARD_WIDTH) {
-			return;
-		}
-		boardLocationState[] column = board[playerDecision];
-		// if the column is full, we can't insert the token!
-		if(column[0] != boardLocationState.EMPTY) {
-			return;
-		}
-		for(int i=BOARD_HEIGHT-1; i>=0; i--) {
-			if(column[i] == boardLocationState.EMPTY) {
-				column[i] = (player == 0) ? boardLocationState.PLAYER_A : boardLocationState.PLAYER_B;
-				break;
-			}
-		}
+		board.insertToken(player,playerDecision);
 	}
 	
-	private boolean isGameWon() {
-		int[][] offsetOffsets = new int[][] { {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1} };
-		if(lastColumn >= BOARD_WIDTH) {
-			return false;
-		}
-		int rowIndex = -1;
-		for(int i=0;i<BOARD_HEIGHT;i++){
-			if(board[lastColumn][i] != boardLocationState.EMPTY) {
-				rowIndex = i;
-				break;
-			}
-		}
-		if(rowIndex == -1) {
-			System.err.println("Empty column passed into isGameWon");
-			return false;
-			
-		}
-		for(int direction=0; direction<offsetOffsets.length; direction++){
-			int colOffset = 0, rowOffset = 0;
-			if(lastColumn + (3*offsetOffsets[direction][0]) >= BOARD_WIDTH || lastColumn + (3*offsetOffsets[direction][0]) < 0) {
-				continue;
-			}
-			if(rowIndex + (3*offsetOffsets[direction][1]) >= BOARD_HEIGHT || rowIndex + (3*offsetOffsets[direction][1]) < 0) {
-				continue;
-			}
-			while(board[lastColumn + colOffset][rowIndex + rowOffset] == board[lastColumn][rowIndex]) {
-				if(Math.abs(colOffset) == 3 || Math.abs(rowOffset) == 3) {
-					return true;
-				}
-				colOffset += offsetOffsets[direction][0];
-				rowOffset += offsetOffsets[direction][1];
-				
-			}
-		}
-		return false;
-	}
 	
 	public void run() {
-		int playerTurn = 0;
+		playerTurn = 0;
+		// turnsTaken only zero when we call run() so we know when we've called run()
+		turnsTaken = 0;
 		while(!gameWon) {
-			takeTurn(playerTurn, players[playerTurn].takeTurn(board.clone()));
+			takeTurn(playerTurn, players[playerTurn].takeTurn(board.getPlayerBoard(playerTurn)));
 			turnsTaken++;
-			playerTurn = (++playerTurn) % 2;
-			gameWon = isGameWon();
+			gameWon = board.gameWon();
+			if(!gameWon) // don't mess with playerTurn if the game has been won, we need it later
+				playerTurn = (++playerTurn) % 2;
+			// sanity check: don't keep looping if the board is full!
+			if(board.isFull())
+				break;
 		}
-		
+	}
+	public Player winner() {
+		if(turnsTaken<=0) {
+			System.err.println("Game not played yet, can't decide winner");
+			return null;
+		}
+		if(!gameWon) {
+			return null;
+		}
+		// the last player to take a turn necessarily won the game (see comment in run())
+		return players[playerTurn];
+	}
+	
+	public Player loser() {
+		if(turnsTaken<=0) {
+			System.err.println("Game not played yet, can't decide loser");
+			return null;
+		}
+		if(!gameWon) {
+			return null;
+		}
+		// since the last player won, we want the player who didn't win (warning: hack)
+		return players[playerTurn==0?1:0];
+	}
+
+	public int gameLength() {
+		if(turnsTaken>0) 
+			return turnsTaken;
+		if(turnsTaken<0)
+			System.err.println("gameLength() called without calling run() first");
+		if(turnsTaken==0)
+			System.err.println("gameLength() returned zero (run() was called but game was not played :s)");
+		return -1;
 	}
 }
